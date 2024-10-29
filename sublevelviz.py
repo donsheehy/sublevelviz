@@ -38,38 +38,55 @@ class Sub:
             return max(self.Z[p] for p in triangle)
 
         T = [triangle for triangle in all_triangles if value(triangle) <= t]
-        return X, Y, Z, T
+        return Triangulation(X, Y, Z, T)
 
+class Triangulation:
+    def __init__(self, X, Y, Z, T):
+        self.X = X
+        self.Y = Y
+        self.Z = Z
+        self.T = T
 
-def f(x,y):
-    return np.exp(-(x**2 + y**2)/0.1)
+    def translate(self, vec):
+        dx, dy, dz = vec
+        XX = [x + dx for x in self.X]
+        YY = [y + dy for y in self.Y]
+        ZZ = [z + dz for z in self.Z]
+        return Triangulation(XX, YY, ZZ, self.T)
+
+    def flatten(self):
+        return Triangulation(self.X, [0 for y in self.Y], [y-1.1 for y in self.Y], self.T)
+    
+    def __iter__(self):
+        yield self.X
+        yield self.Y
+        yield self.Z
+        yield self.T
+
+    def __bool__(self):
+        return len(self.T) > 0
 
 def dist(a,b):
-    return ((a[0]-b[0])**2 + (a[1]-b[1])**2)**0.5
+    return (sqdist(a, b))**0.5
 
-def max_extension(P):
+def sqdist(a,b):
+    return (a[0]-b[0])**2 + (a[1]-b[1])**2
+
+def gaussian(px, py, sigma, scale):
+    def g(x,y):
+        return scale * np.exp(-(sqdist([x,y], [px,py]))/(sigma**2))
+    return g
+
+if __name__ == '__main__':
     def f(x,y):
-        return min(pz + dist([x, y], [px, py]) for px, py, pz in P)
-    return f
+        bumps = [(-0.35, 0.1, 0.3, 1), (-0.33, 0.1,0.15, -0.75), (0.25,-0.1,0.2, 0.75)]
+        gs = [gaussian(*p) for p in bumps]
+        return sum(g(x,y) for g in gs)
 
-def min_extension(P):
-    def f(x,y):
-        return max(pz - dist([x, y], [px, py]) for px, py, pz in P)
-    return f
-
-
-P = [(-0.5,0.5,0), (0.5,0.5,0), (0,-0.5, 0.5)]
-f_max = max_extension(P)
-f_min = min_extension(P)
-
-G = Grid(1000,1000)
-F_max = Sub(f_max, G)
-F_min = Sub(f_min, G)
-fig = figure(bgcolor=(1,1,1))
-
-t = 0.3
-
-triangular_mesh(*F_max(t), colormap='gray')
-triangular_mesh(*F_min(t), colormap='gray')
-
-show()
+    G = Grid(100, 100)
+    F = Sub(f, G)
+    t = 0.3
+    c = (0.78, 0.78, 0.78)
+    fig = figure(bgcolor=(1, 1, 1))
+    triangular_mesh(*F(t), color=c)
+    show()
