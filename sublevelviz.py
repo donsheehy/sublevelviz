@@ -83,7 +83,7 @@ if __name__ == '__main__':
         gs = [gaussian(*p) for p in bumps]
         return sum(g(x,y) for g in gs)
 
-    G = Grid(100, 100)
+    G = Grid(1000, 1000)
     F = Sub(f, G)
     t = 0.3
     c = (0.78, 0.78, 0.78)
