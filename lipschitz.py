@@ -10,6 +10,12 @@ def min_extension(P, t=1):
         return max(pz - (t * dist([x, y], [px, py])) for px, py, pz in P)
     return f
 
+def mean_extension(P, t=1):
+    fmax = max_extension(P)
+    fmin = min_extension(P)
+    def f(x,y):
+        return (fmax(x,y) + fmin(x,y)) / 2
+
 if __name__ == '__main__':
     P = [(-0.5,0.5,0), (0.5,0.5,0), (0,-0.5, 0.5)]
     f_max = max_extension(P)

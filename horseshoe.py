@@ -56,6 +56,7 @@ if __name__ == '__main__':
 
     t = 100
 
-    # triangular_mesh(*F(t), color=c)
+    fig2 = figure(bgcolor=(1, 1, 1))
+    triangular_mesh(*F(t), color=c)
     
     show()

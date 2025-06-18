@@ -29,15 +29,15 @@ for i, t in enumerate(T):
     cplx = F_max(t).translate([2.1*i, 0 , 0])
     if cplx:
         triangular_mesh(*cplx, color=c)
-        # flat = cplx.flatten().translate([0, -1.13, -0.1])
-        # if flat:
-        #     triangular_mesh(*flat, color=c)
+        flat = cplx.flatten().translate([0, -1.13, -0.1])
+        if flat:
+            triangular_mesh(*flat, color=c)
     cplx = F_min(t).translate([2.1*i, 0 , 0])
     if cplx:
         triangular_mesh(*cplx, color=c2)
-        # flat = cplx.flatten().translate([0, -1.1 , -0.1])
-        # if flat:    
-        #     triangular_mesh(*flat, color=c2)
+        flat = cplx.flatten().translate([0, -1.1 , -0.1])
+        if flat:    
+            triangular_mesh(*flat, color=c2)
 
 view(-90, 75, 30)
 show()
